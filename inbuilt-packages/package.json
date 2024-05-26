@@ -1,0 +1,16 @@
+{
+  "name": "inbuilt-packages",
+  "version": "1.0.0",
+  "description": "Inbuilt packages",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node http.js", 
+    "dev": "nodemon http.js"
+  },
+  "author": "Bhavana",
+  "license": "ISC",
+  "dependencies": {
+    "nodemon": "^3.0.2"
+  }
+}

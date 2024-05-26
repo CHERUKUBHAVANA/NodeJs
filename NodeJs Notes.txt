@@ -1,0 +1,185 @@
+What is NodeJs?
+    It is a backend (which receives requests from frontend and serves those requesting by sending files or streaming media etc...). It connects frontend and database.
+    It is used to create RESTful APIs in the backend.(using Express module)
+Node is very light-weight on its own.
+It uses various modules and packages to do some work. Like, Express, Axios, Mongoose etc..
+
+Backend = MongoDB + Express + NodeJs
+Frontend = ReactJs / Angular / Vue.Js
+
+Node is Single-threaded (will not wait for other actions, but continues taking requests), Event-based, non-blocking model.
+
+NPM (Node Package Manager) - maintains packages like Express, Mongoose, Mocha.
+NPM client/CLI can be used to install these packages easily.
+like: npm i express, npm i mongoose
+
+To create a package.json file, npm init in the terminal. Give the details.
+There are some inbuilt packages in NodeJs like os, fs, http, ...
+require() is the function used to import packages.
+
+By default, writeFile() methods are asynchronous or non-blocking.
+writeFileSync() functions block the next execution of lines, until file is created or some action is performed.
+
+writeFile() or writeFileSync() methods create new file, if it doesn't exists. Else, overwrites the file.
+appendFile() - to append the data.
+rename()
+readFile():
+fs.readFile("demo.txt", "utf-8", (err, data)=>{
+    if(err){
+        throw err;
+    }
+    console.log(data)
+})
+--> data, when logged, shows byte-encoding. To avoid it, use utf-8 as parameter to the callback.
+unlink() - to delete a file
+
+http.js
+createServer()
+
+var http = require('http')
+var server = http.createServer((request, response)=>{
+    // after creation of server, this callback is executed by server.
+    // request: to process any request/data that is coming from the web-browser.
+    // response: to send response back to the browser
+    response.write("<b>Node Http in action!</b>"); //server writes response to the browser.
+    response.end(); // tells browser that, it(server) has done its work.
+})
+
+server.listen(5000) // assigning a port to server
+
+npm i nodemon -g //reload the files automatically, without a need to restart the node.
+Enter nodemon filename.js to run later.
+
+"scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1" //shortcuts to execute the things mentioned in value part.
+  },
+"scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node http.js", //npm start (or) npm run start , will automatically run http.js file
+    "dev": "nodemon http.js" // npm run dev, will run nodemon (automatic reloading) http automatically.
+  },
+
+NOTE : npm start, npm test, npm stop, npm restart can be used without mentioning "run" after npm.
+But, for custom keys like "dev" and others, we should mention, npm run dev
+
+
+EXPRESS:
+It is the web application development framework/module in the node space.
+Build RESTFul API using Express, which will be consumed by applications built on React or Angular. We tell express, which functions should be invoked when a request comes in, and the express knows that it should handover the response to the function, which we create.
+Express simply takes that response and send it to these frontends.
+
+We configure functions as middlewares using Express. 
+middleware - a function that has both the incoming request and the response objects.
+var app = require('express')
+app.use(middlewareFunc(){
+
+})
+app.use('/url', middlewareFunc(){
+
+}) //useful when building restful APIs. When a client enter this url, the express invokes the function that is created (middlewareFunc)
+app.get("url",middlewareFunc(){
+
+})
+
+REST: Representational State Transfer
+Create, Read, Update, Delete (CRUD operations)
+Post, Get, Put, Delete
+
+RESTFul provider can provide data in the form of json format, incase of web applications built using HTML, JS. Because, JS can understand json objects easily.
+
+REST is stateless.
+
+POST, DELETE, PUT request can't be sent from web-browser.
+Only GET can be sent. So, use Postman.
+
+Move all the endpoints to a controller module of its own, for better organization.
+Create a Router() instance. (const router = express.Router())
+Bind all get, put, post, delete methods to that router instance (Ex: router.get())
+Export that router (module.exports = router)
+
+In the main api.js/app.js/index.js, 
+Create express instance (const app = express())
+Import that router from controller (const productsRouter = require('./productsController'))
+Bind it to express instance. (app.use('/productsapi', productsRouter))
+
+Say, router.get('/products',()=>{})
+Then, give url as: '/productsapi/products'
+
+npm i mongoose
+const mongoose = require('mongoose')
+mongoose.connect('mongodb+srv://bhavana:bhavana@cluster0.yzmrtmn.mongodb.net/',{})
+.then(()=>{
+    console.log('db connected');
+})
+.catch(err => console.log('DB CONNECTION ERROR:', err));
+
+const productsSchema = new mongoose.Schema({
+    id: String,
+    name: String,
+    price: Number
+})
+const Product = mongoose.model("products", productsSchema)
+
+body-parser : It is an http body parsing middleware (Converts string form of data to JSON). Otherwise, we can't use req.body
+
+Mongoose - is an ODM(Object Document Mapping) tool/framework.
+
+axios - RESTFul client library, to make http requests from frontend applications(built using React/Angular) to the server.
+
+npm i axios
+
+mocha and chai - Testing libraries, to write unit and integrated tests, using GIVEN WHEN THEN structure i.e, describe it then functions.
+
+npm i mocha chai chai-http
+
+describe - indicates test suite
+it - indicates each test case 
+then - handling response
+
+describe('Product API', ()=>{
+    it('Get all products', ()=>{
+        chai.request('http://localhost:8000/productapi').get('/products').then((res)=>{
+            expect(res).to.have.status(200);
+        }).catch((err)=>{
+            throw err;
+        })
+    })
+})
+
+"test": "mocha --timeout 10000"
+
+By default, mocha looks at "test" folder.
+
+ mocha --timeout 10000
+  Product API
+    ✔ Get all products
+  1 passing (23ms)
+
+
+return chai.request('http://localhost:8000/productapi').get('/products').then((res)=>{
+            expect(res).to.have.status(400);
+        }).catch((err)=>{
+            throw err;
+        })
+
+ 0 passing (137ms)
+  1 failing
+
+  1 Product API
+       Get all products:
+
+      AssertionError: expected { Object (_events, _eventsCount, ...) } to have status code 400 but got 200
+      + expected - actual
+
+      -200
+      +400
+
+mocha Lifecycle methods:
+before() : It is executed before all tests are run, called only once. (database connection)
+after() : It is executed after all tests are run, called only once. (cleanup activity)
+beforeEach() & afterEach() : After all tests are run.
+
+npm i @babel/core @babel/node @babel/preset-env
+To use imports outside a module
+Create .babelrc
+change "dev": "nodemon --exec babel-node src/api.js", in package.json
